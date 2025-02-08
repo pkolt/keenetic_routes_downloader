@@ -1,0 +1,18 @@
+{
+  "$schema": "https://json.schemastore.org/chrome-manifest",
+  "name": "Keenetic Routes Downloader",
+  "description": "",
+  "version": "1.0",
+  "manifest_version": 3,
+  "permissions": ["downloads", "tabs", "scripting"],
+  "host_permissions": ["http://192.168.1.1/*"],
+  "background": {
+    "service_worker": "service_worker.js",
+    "type": "module"
+  },
+  "action": {
+    "default_icon": {
+      "32": "icon_disabled.png"
+    }
+  }
+}

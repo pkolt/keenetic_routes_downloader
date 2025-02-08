@@ -1,0 +1,25 @@
+{
+  "name": "keenetic_routes_downloader",
+  "version": "0.0.1",
+  "private": "true",
+  "main": "background.js",
+  "type": "module",
+  "engines": {
+    "node": ">= 22"
+  },
+  "scripts": {
+    "build": "rimraf public/*.js && tsc",
+    "typecheck": "tsc --noEmit",
+    "format": "prettier --check src",
+    "format-fix": "prettier --write src",
+    "test": "tsx --test src/*.test.ts"
+  },
+  "devDependencies": {
+    "@types/chrome": "^0.0.303",
+    "@types/node": "^22.13.1",
+    "prettier": "^3.4.2",
+    "rimraf": "^6.0.1",
+    "tsx": "^4.19.2",
+    "typescript": "^5.7.3"
+  }
+}
