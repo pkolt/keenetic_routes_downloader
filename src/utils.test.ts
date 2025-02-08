@@ -8,12 +8,12 @@ test('good ip', () => {
 });
 
 test('parse ip', () => {
-  const result = getRoutesFromConfig('ip route 192.100.50.1 Network0 auto');
+  const result = getRoutesFromConfig('ip route 192.100.50.1 Network0');
   assert.deepEqual(result, [{ route: '192.100.50.1', mask: '255.255.255.255', gateway: '0.0.0.0' } satisfies Route]);
 });
 
 test('parse network + mask', () => {
-  const result = getRoutesFromConfig('ip route 192.100.50.0 255.255.255.0 Network0 auto');
+  const result = getRoutesFromConfig('ip route 192.100.50.0 255.255.255.0 Network0');
   assert.deepEqual(result, [{ route: '192.100.50.0', mask: '255.255.255.0', gateway: '0.0.0.0' } satisfies Route]);
 });
 

@@ -8,12 +8,8 @@ export function isIp(value: string): boolean {
   return value.match(/^(?:\d{1,3}\.){3}\d{1,3}$/) !== null;
 }
 
-const REGEXP_IP = /^ip route (?<ip>(?:\d{1,3}\.){3}\d{1,3}) \w+ auto$/gm;
-const REGEXP_NETWORK_MASK =
-  /^ip route (?<network>(?:\d{1,3}\.){3}\d{1,3}) (?<mask>(?:\d{1,3}\.){3}\d{1,3}) \w+ auto$/gm;
-const REGEXP_IP_GATEWAY = /^ip route (?<ip>(?:\d{1,3}\.){3}\d{1,3}) (?<gateway>(?:\d{1,3}\.){3}\d{1,3}) \w+$/gm;
-const REGEXP_NETWORK_MASK_GATEWAY =
-  /^ip route (?<network>(?:\d{1,3}\.){3}\d{1,3}) (?<mask>(?:\d{1,3}\.){3}\d{1,3}) (?<gateway>(?:\d{1,3}\.){3}\d{1,3}) \w+$/gm;
+const REGEXP_ROUTE =
+  /^ip route (?<route>(?:\d{1,3}\.){3}\d{1,3})(\s(?<mask>(255\.)(?:\d{1,3}\.){2}\d{1,3}))?(\s(?<gateway>(?:\d{1,3}\.){3}\d{1,3}))? \w+/gm;
 
 const DEFAULT_MASK = '255.255.255.255';
 const DEFAULT_GATEWAY = '0.0.0.0';
@@ -21,42 +17,12 @@ const DEFAULT_GATEWAY = '0.0.0.0';
 export function getRoutesFromConfig(configText: string): Route[] {
   const routes: Route[] = [];
 
-  for (const match of configText.matchAll(REGEXP_IP)) {
+  for (const match of configText.matchAll(REGEXP_ROUTE)) {
     if (match.groups) {
       routes.push({
-        route: match.groups.ip,
-        mask: DEFAULT_MASK,
-        gateway: DEFAULT_GATEWAY,
-      });
-    }
-  }
-
-  for (const match of configText.matchAll(REGEXP_NETWORK_MASK)) {
-    if (match.groups) {
-      routes.push({
-        route: match.groups.network,
-        mask: match.groups.mask,
-        gateway: DEFAULT_GATEWAY,
-      });
-    }
-  }
-
-  for (const match of configText.matchAll(REGEXP_IP_GATEWAY)) {
-    if (match.groups) {
-      routes.push({
-        route: match.groups.ip,
-        mask: DEFAULT_MASK,
-        gateway: match.groups.gateway,
-      });
-    }
-  }
-
-  for (const match of configText.matchAll(REGEXP_NETWORK_MASK_GATEWAY)) {
-    if (match.groups) {
-      routes.push({
-        route: match.groups.network,
-        mask: match.groups.mask,
-        gateway: match.groups.gateway,
+        route: match.groups.route,
+        mask: match.groups.mask ?? DEFAULT_MASK,
+        gateway: match.groups.gateway ?? DEFAULT_GATEWAY,
       });
     }
   }
