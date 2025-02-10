@@ -2,7 +2,6 @@
   "name": "keenetic_routes_downloader",
   "version": "0.0.1",
   "private": "true",
-  "main": "background.js",
   "type": "module",
   "engines": {
     "node": ">= 22"
