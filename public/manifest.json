@@ -4,8 +4,8 @@
   "description": "",
   "version": "1.0",
   "manifest_version": 3,
-  "permissions": ["downloads", "tabs", "scripting"],
-  "host_permissions": ["http://192.168.1.1/*"],
+  "permissions": ["downloads", "tabs", "scripting", "webNavigation"],
+  "host_permissions": ["http://192.168.1.1/staticRoutes"],
   "background": {
     "service_worker": "service_worker.js",
     "type": "module"
