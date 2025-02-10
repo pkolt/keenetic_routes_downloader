@@ -1,11 +1,11 @@
 {
   "$schema": "https://json.schemastore.org/chrome-manifest",
   "name": "Keenetic Routes Downloader",
-  "description": "",
+  "description": "Позволяет скачать таблицу маршрутизации для роутеров Keenetic",
   "version": "1.0",
   "manifest_version": 3,
-  "permissions": ["downloads", "tabs", "scripting", "webNavigation"],
-  "host_permissions": ["http://192.168.1.1/staticRoutes"],
+  "permissions": ["downloads", "tabs", "webNavigation"],
+  "host_permissions": ["http://192.168.1.1/*"],
   "background": {
     "service_worker": "service_worker.js",
     "type": "module"
