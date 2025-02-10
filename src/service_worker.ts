@@ -5,30 +5,35 @@ const TAB_URL = `${BASE_URL}/`;
 const LOGIN_URL = `${BASE_URL}/login`;
 const CONFIG_URL = `${BASE_URL}/ci/startup-config.txt`;
 
+chrome.runtime.onInstalled.addListener(async () => {
+  const tab = await getActiveTab();
+  updateIcon(tab?.url);
+});
+
 chrome.webNavigation.onCompleted.addListener(
-  ({ url, tabId }) => {
-    updateIcon(tabId, url);
+  ({ url }) => {
+    updateIcon(url);
   },
   { url: [{ urlPrefix: TAB_URL }] },
 );
 
 chrome.webNavigation.onHistoryStateUpdated.addListener(
-  ({ tabId, url }) => {
-    updateIcon(tabId, url);
+  ({ url }) => {
+    updateIcon(url);
   },
   { url: [{ urlPrefix: TAB_URL }] },
 );
 
+// Activate tab
 chrome.tabs.onActivated.addListener((activeInfo) => {
-  chrome.tabs.get(activeInfo.tabId, ({ id, url }) => {
-    if (id && url) {
-      updateIcon(id, url);
-    }
+  chrome.tabs.get(activeInfo.tabId, (tab) => {
+    updateIcon(tab.url);
   });
 });
 
+// Clicked by icon
 chrome.action.onClicked.addListener(async (tab) => {
-  if (tab.url && tab.id && userHasAuthorization(tab.url)) {
+  if (tab.url && userHasAuthorization(tab.url)) {
     try {
       const configText = await getConfigText();
       const routes = getRoutesFromConfig(configText);
@@ -43,13 +48,34 @@ chrome.action.onClicked.addListener(async (tab) => {
   }
 });
 
+async function getActiveTab(): Promise<chrome.tabs.Tab | null> {
+  return new Promise((resolve) => {
+    chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+      resolve(tabs[0] ?? null);
+    });
+  });
+}
+
 function userHasAuthorization(url: string) {
   return url.startsWith(TAB_URL) && !url.startsWith(LOGIN_URL);
 }
 
-function updateIcon(tabId: number, url: string) {
-  const iconPath = userHasAuthorization(url) ? 'icon_enabled.png' : 'icon_disabled.png';
-  chrome.action.setIcon({ path: iconPath, tabId: tabId });
+function updateIcon(url?: string) {
+  const isEnabled = userHasAuthorization(url ?? '');
+
+  chrome.action.setIcon({
+    path: {
+      '16': isEnabled ? 'icon_16.png' : 'icon_16_gray.png',
+      '48': isEnabled ? 'icon_48.png' : 'icon_48_gray.png',
+      '128': isEnabled ? 'icon_128.png' : 'icon_128_gray.png',
+    },
+  });
+
+  if (isEnabled) {
+    chrome.action.enable();
+  } else {
+    chrome.action.disable(); // Disabled only clickable
+  }
 }
 
 function makeRoutesFilename(): string {
